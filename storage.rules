@@ -1,0 +1,24 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isVerifiedAdmin() {
+      return request.auth != null &&
+        request.auth.token.email_verified == true &&
+        request.auth.token.email == 'info.safatravels.ksa@gmail.com';
+    }
+
+    // Public read for media assets, strictly authenticated admin writes with size and MIME validation
+    match /media/{allPaths=**} {
+      allow read: if true;
+      allow write: if isVerifiedAdmin() &&
+        request.resource.size < 50 * 1024 * 1024 && // 50MB limit
+        request.resource.contentType.matches('^(image/(jpeg|png|webp|svg\\+xml)|video/(mp4|webm))$');
+    }
+
+    // Default deny all other paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
