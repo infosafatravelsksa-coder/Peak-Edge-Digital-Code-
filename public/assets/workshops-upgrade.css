@@ -1,0 +1,25 @@
+/* Optional source stylesheet for WorkshopsSection.jsx */
+.orbit-workshops{position:relative;isolation:isolate;overflow:hidden;padding:clamp(2rem,5vw,5.5rem) 0;background:radial-gradient(ellipse at 82% 18%,rgba(255,85,51,.075),transparent 34%),radial-gradient(ellipse at 12% 82%,rgba(0,229,255,.035),transparent 32%),#090b10;color:#111}
+.orbit-workshops:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.23;background-image:radial-gradient(rgba(255,255,255,.17) .65px,transparent .65px);background-size:18px 18px;mask-image:linear-gradient(to bottom,transparent,#000 20%,#000 80%,transparent)}
+.orbit-workshops__inner{width:min(1340px,calc(100% - 2rem));margin:auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(1rem,2vw,1.75rem);align-items:stretch}
+.orbit-workshops__copy{min-height:580px;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(1.35rem,3.2vw,3rem);border:1px solid rgba(255,255,255,.72);border-radius:24px;background:#fff;box-shadow:0 28px 80px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.9);transition:box-shadow .35s ease}
+.orbit-workshops__copy:hover{box-shadow:0 32px 90px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.9)}
+.orbit-workshops__header{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.orbit-workshops__eyebrow{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem}
+.orbit-workshops__section-number{border:1px solid #111;border-radius:4px;padding:.18rem .42rem;font:700 10px/1.2 ui-monospace,monospace;letter-spacing:.08em}
+.orbit-workshops__badge{display:flex;gap:1px;border-radius:4px;background:#000;padding:.2rem .45rem;color:#fff;font:900 10px/1.2 system-ui,sans-serif;letter-spacing:.13em}
+.orbit-workshops__letter--0{color:#00e5ff}.orbit-workshops__letter--1{color:#ff4081}.orbit-workshops__letter--2{color:#ffd600}
+.orbit-workshops__tabs{display:flex;gap:4px;padding:4px;border-radius:9px;background:#eef0f3;box-shadow:inset 0 2px 8px rgba(15,23,42,.06)}
+.orbit-workshops__tabs button{min-width:40px;min-height:34px;border:0;border-radius:6px;background:transparent;color:#4b5563;font:700 11px ui-monospace,monospace;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.orbit-workshops__tabs button[aria-selected=true]{background:#050505;color:white;box-shadow:0 2px 5px #0002}
+.orbit-workshops__tabs button:hover{transform:translateY(-1px);color:#111}.orbit-workshops__tabs button:focus-visible{outline:2px solid #ff5533;outline-offset:3px}
+.orbit-workshops__text{margin:auto 0;padding:3rem 0;text-align:center}.orbit-workshops__text h2{margin:0 0 1.8rem;font-size:clamp(2rem,3.2vw,2.8rem);font-weight:750;line-height:1.12;letter-spacing:-.055em}.orbit-workshops__text p{max-width:480px;margin:0 auto;color:#374151;font-size:13px;line-height:1.7}
+.orbit-workshops__gallery{min-width:0;min-height:580px;perspective:1000px}.orbit-workshops__image-stack{height:100%;display:grid;grid-template-rows:1fr 1fr;gap:14px}
+.orbit-workshops__image{position:relative;min-height:220px;margin:0;overflow:hidden;border:1px solid #ffffff20;border-radius:22px;background:#17191e;box-shadow:0 16px 42px #0003;isolation:isolate}
+.orbit-workshops__image:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#0002,transparent 35%,#0003)}
+.orbit-workshops__image img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .85s cubic-bezier(.2,.75,.25,1),filter .5s}
+.orbit-workshops__image:hover img{transform:scale(1.045);filter:saturate(1.08) contrast(1.025)}
+.orbit-workshops__image-index{position:absolute;right:1rem;bottom:1rem;z-index:1;color:#fff;font:600 10px ui-monospace,monospace;letter-spacing:.1em;text-shadow:0 1px 6px #0008}
+@media(max-width:900px){.orbit-workshops__inner{grid-template-columns:1fr}.orbit-workshops__copy{min-height:450px}.orbit-workshops__gallery{min-height:480px}}
+@media(max-width:560px){.orbit-workshops__inner{width:calc(100% - 1.25rem)}.orbit-workshops__copy{min-height:430px;padding:1.25rem;border-radius:20px}.orbit-workshops__tabs button{min-width:34px;padding-inline:.5rem}.orbit-workshops__gallery{min-height:0}.orbit-workshops__image-stack{grid-template-rows:repeat(2,220px);gap:12px}.orbit-workshops__image{border-radius:18px}}
+@media(prefers-reduced-motion:reduce){.orbit-workshops *{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}}
