@@ -1,0 +1,155 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Security Primitives
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedEmail() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    // The explicit single-owner admin check
+    function isVerifiedAdmin() {
+      return isVerifiedEmail() && (
+        request.auth.token.email == 'info.safatravels.ksa@gmail.com' ||
+        exists(/databases/$(database)/documents/adminAllowlist/$(request.auth.uid))
+      );
+    }
+
+    // 1. Admin Allowlist Collection
+    match /adminAllowlist/{adminId} {
+      allow get: if isVerifiedAdmin() && isValidId(adminId);
+      allow list: if isVerifiedAdmin();
+      allow create, update: if isVerifiedAdmin() && isValidId(adminId) &&
+        incoming().keys().hasAll(['email', 'role', 'status']) &&
+        incoming().email is string &&
+        incoming().role in ['owner', 'admin'] &&
+        incoming().status in ['active', 'suspended'];
+      allow delete: if isVerifiedAdmin() && isValidId(adminId);
+    }
+
+    // 2. Global Site Settings
+    match /siteSettings/{settingId} {
+      allow get: if isVerifiedAdmin() && isValidId(settingId);
+      allow list: if isVerifiedAdmin();
+      allow create, update: if isVerifiedAdmin() && isValidId(settingId) &&
+        incoming().keys().hasAll(['siteName']) &&
+        incoming().siteName is string &&
+        incoming().siteName.size() <= 200;
+      allow delete: if isVerifiedAdmin() && isValidId(settingId);
+    }
+
+    // 3. Website Pages
+    match /pages/{pageId} {
+      allow get: if isVerifiedAdmin() && isValidId(pageId);
+      allow list: if isVerifiedAdmin();
+      allow create, update: if isVerifiedAdmin() && isValidId(pageId) &&
+        incoming().keys().hasAll(['slug', 'title', 'status']) &&
+        incoming().slug is string && incoming().slug.size() <= 100 &&
+        incoming().title is string && incoming().title.size() <= 200 &&
+        incoming().status in ['draft', 'published'];
+      allow delete: if isVerifiedAdmin() && isValidId(pageId);
+    }
+
+    // 4. Modular Website Sections
+    match /sections/{sectionId} {
+      allow get: if isVerifiedAdmin() && isValidId(sectionId);
+      allow list: if isVerifiedAdmin();
+      allow create, update: if isVerifiedAdmin() && isValidId(sectionId) &&
+        incoming().keys().hasAll(['sectionType', 'internalTitle', 'status', 'isVisible']) &&
+        incoming().sectionType in [
+          'nav', 'hero', 'channels', 'creative', 'about', 'aboutValues', 'services',
+          'workshops', 'innovation', 'workflow', 'proven', 'portfolio', 'testimonials',
+          'team', 'journal', 'clients', 'faq', 'pricing', 'contact', 'footer', 'custom'
+        ] &&
+        incoming().internalTitle is string && incoming().internalTitle.size() <= 200 &&
+        incoming().status in ['draft', 'published'] &&
+        incoming().isVisible is bool;
+      allow delete: if isVerifiedAdmin() && isValidId(sectionId);
+    }
+
+    // 5. Published Content Snapshots (Public Read-Only)
+    match /publishedContent/{contentId} {
+      // Public visitors can only view published pages
+      allow get: if isValidId(contentId);
+      allow list: if true;
+      // Only authenticated, authorized admin can publish updates or unpublish
+      allow create, update: if isVerifiedAdmin() && isValidId(contentId) &&
+        incoming().keys().hasAll(['pageSlug', 'version']) &&
+        incoming().pageSlug is string &&
+        incoming().version is number;
+      allow delete: if isVerifiedAdmin() && isValidId(contentId);
+    }
+
+    // 6. Media Library (Public read for SEO & Google indexing; Admin write)
+    match /media/{mediaId} {
+      allow get: if isValidId(mediaId);
+      allow list: if true;
+      allow create, update: if isVerifiedAdmin() && isValidId(mediaId) &&
+        incoming().keys().hasAll(['filename', 'mimeType', 'storageUrl']) &&
+        incoming().filename is string && incoming().filename.size() <= 256 &&
+        incoming().mimeType is string && incoming().mimeType.size() <= 100 &&
+        incoming().storageUrl is string && incoming().storageUrl.size() <= 20000000;
+      allow delete: if isVerifiedAdmin() && isValidId(mediaId);
+    }
+
+    // 7. Version Revisions (Immutable Snapshots)
+    match /revisions/{revisionId} {
+      allow get: if isVerifiedAdmin() && isValidId(revisionId);
+      allow list: if isVerifiedAdmin();
+      allow create: if isVerifiedAdmin() && isValidId(revisionId) &&
+        incoming().keys().hasAll(['entityType', 'entityId', 'snapshot', 'createdBy']) &&
+        incoming().entityType in ['page', 'section', 'siteSettings'] &&
+        incoming().entityId is string &&
+        incoming().createdBy is string;
+      // Revisions are immutable
+      allow update, delete: if false;
+    }
+
+    // 8. Security Audit Logs (Immutable Append-Only)
+    match /auditLogs/{logId} {
+      allow get: if isVerifiedAdmin() && isValidId(logId);
+      allow list: if isVerifiedAdmin();
+      allow create: if isVerifiedAdmin() && isValidId(logId) &&
+        incoming().keys().hasAll(['action', 'adminEmail', 'adminUid']) &&
+        incoming().action is string &&
+        incoming().adminEmail is string &&
+        incoming().adminUid is string;
+      // Audit logs are permanent and immutable
+      allow update, delete: if false;
+    }
+
+    // 9. Brief Submissions & Client Inquiries
+    match /briefSubmissions/{briefId} {
+      // Public visitors can submit briefs from the Growth Scope Configurator
+      allow create: if isValidId(briefId) &&
+        incoming().keys().hasAll(['clientTimestamp']) &&
+        incoming().clientTimestamp is string &&
+        incoming().clientTimestamp.size() <= 64;
+      // Only authorized administrator can read, update status, or archive briefs
+      allow get: if isVerifiedAdmin() && isValidId(briefId);
+      allow list: if isVerifiedAdmin();
+      allow update, delete: if isVerifiedAdmin() && isValidId(briefId);
+    }
+  }
+}
