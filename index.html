@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Orbit Digital - Full-Service Growth & Marketing Agency</title>
+    <meta name="description" content="Orbit Digital is a full-service digital marketing agency engineering growth engines across strategy, creative, search, media, and performance for ambitious global brands." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        background: #fcfcfc;
+        color: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- CMS Admin In-Page Modal Container -->
+    <div id="admin-modal-root" style="display:none; position:fixed; inset:0; z-index:999999; overflow-y:auto; background:#07090e;"></div>
+    <script src="/assets/cms-live-sync.js"></script>
+    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/admin/adminMain.tsx"></script>
+    <button type="button" id="cms-admin-btn" style="position: fixed; bottom: 18px; right: 18px; z-index: 99999; display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; background: rgba(15, 19, 28, 0.95); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 9999px; color: #f3f4f6; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 600; cursor: pointer; backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: all 0.2s;" onmouseover="this.style.borderColor='rgba(52,211,153,0.8)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'; this.style.transform='none';">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>CMS Admin</span>
+    </button>
+  </body>
+</html>

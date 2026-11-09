@@ -1,0 +1,381 @@
+{
+  "entities": {
+    "AdminAllowlist": {
+      "title": "AdminAllowlist",
+      "description": "Authorized administrator identities allowed to access CMS and admin dashboard",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Verified email address of the administrator"
+        },
+        "uid": {
+          "type": "string",
+          "description": "Firebase Authentication UID of the administrator"
+        },
+        "role": {
+          "type": "string",
+          "description": "Administrative role (e.g. owner)",
+          "enum": ["owner", "admin"]
+        },
+        "addedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp when administrator was enrolled"
+        },
+        "status": {
+          "type": "string",
+          "description": "Account authorization status",
+          "enum": ["active", "suspended"]
+        }
+      },
+      "required": ["email", "role", "status"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global website configuration, default SEO, and maintenance flags",
+      "type": "object",
+      "properties": {
+        "siteName": {
+          "type": "string",
+          "description": "Global website name"
+        },
+        "defaultSeoTitle": {
+          "type": "string",
+          "description": "Default page SEO title"
+        },
+        "defaultSeoDescription": {
+          "type": "string",
+          "description": "Default page SEO description"
+        },
+        "maintenanceMode": {
+          "type": "boolean",
+          "description": "Whether public site is in maintenance mode"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string"
+        }
+      },
+      "required": ["siteName"]
+    },
+    "Page": {
+      "title": "Page",
+      "description": "CMS Page record defining route slug, metadata, and ordered sections",
+      "type": "object",
+      "properties": {
+        "slug": {
+          "type": "string",
+          "description": "URL slug for the page",
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the page"
+        },
+        "metaDescription": {
+          "type": "string",
+          "description": "SEO description of the page"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published"]
+        },
+        "sectionOrder": {
+          "type": "array",
+          "description": "Ordered array of section document IDs"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string"
+        }
+      },
+      "required": ["slug", "title", "status"]
+    },
+    "Section": {
+      "title": "Section",
+      "description": "Independent CMS Section record with draft content, design options, and media references",
+      "type": "object",
+      "properties": {
+        "pageId": {
+          "type": "string",
+          "description": "ID of parent page"
+        },
+        "sectionType": {
+          "type": "string",
+          "description": "Type of component in the section registry",
+          "enum": [
+            "nav",
+            "hero",
+            "channels",
+            "creative",
+            "about",
+            "aboutValues",
+            "services",
+            "workshops",
+            "innovation",
+            "workflow",
+            "proven",
+            "portfolio",
+            "testimonials",
+            "team",
+            "journal",
+            "clients",
+            "faq",
+            "pricing",
+            "contact",
+            "footer",
+            "custom"
+          ]
+        },
+        "internalTitle": {
+          "type": "string",
+          "description": "Administrative reference label"
+        },
+        "isVisible": {
+          "type": "boolean",
+          "description": "Whether section is visible on published page"
+        },
+        "order": {
+          "type": "number",
+          "description": "Display order index"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published"]
+        },
+        "draftContent": {
+          "type": "object",
+          "description": "Structured editable content map"
+        },
+        "designSettings": {
+          "type": "object",
+          "description": "Structured styling & responsive layout settings"
+        },
+        "mediaRefs": {
+          "type": "array",
+          "description": "Referenced media asset IDs"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "type": "string"
+        }
+      },
+      "required": ["sectionType", "internalTitle", "status", "isVisible"]
+    },
+    "PublishedContent": {
+      "title": "PublishedContent",
+      "description": "Public read-only production snapshot of published page content and sections",
+      "type": "object",
+      "properties": {
+        "pageSlug": {
+          "type": "string"
+        },
+        "pageTitle": {
+          "type": "string"
+        },
+        "metaDescription": {
+          "type": "string"
+        },
+        "version": {
+          "type": "number"
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "publishedBy": {
+          "type": "string"
+        },
+        "sections": {
+          "type": "object",
+          "description": "Map of section data approved for public display"
+        }
+      },
+      "required": ["pageSlug", "version"]
+    },
+    "MediaItem": {
+      "title": "MediaItem",
+      "description": "Media library asset metadata and storage references",
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string"
+        },
+        "originalName": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "sizeBytes": {
+          "type": "number"
+        },
+        "storageUrl": {
+          "type": "string"
+        },
+        "altText": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "folder": {
+          "type": "string"
+        },
+        "usedBySections": {
+          "type": "array"
+        },
+        "uploadedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "uploadedBy": {
+          "type": "string"
+        }
+      },
+      "required": ["filename", "mimeType", "storageUrl"]
+    },
+    "Revision": {
+      "title": "Revision",
+      "description": "Historical snapshot of page or section state for rollbacks",
+      "type": "object",
+      "properties": {
+        "entityType": {
+          "type": "string",
+          "enum": ["page", "section", "siteSettings"]
+        },
+        "entityId": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "snapshot": {
+          "type": "object"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["entityType", "entityId", "snapshot", "createdBy"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security and administrative action audit record",
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string"
+        },
+        "targetEntity": {
+          "type": "string"
+        },
+        "targetId": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object"
+        },
+        "adminEmail": {
+          "type": "string"
+        },
+        "adminUid": {
+          "type": "string"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["action", "adminEmail", "adminUid"]
+    },
+    "BriefSubmission": {
+      "title": "BriefSubmission",
+      "description": "Client intake brief submitted from Growth Scope Configurator",
+      "type": "object",
+      "properties": {
+        "clientTimestamp": { "type": "string" },
+        "contactName": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "companyName": { "type": "string" },
+        "projectBudget": { "type": "string" },
+        "timeline": { "type": "string" },
+        "selectedServices": { "type": "array" },
+        "notes": { "type": "string" },
+        "status": { "type": "string", "enum": ["new", "reviewed", "contacted", "archived"] },
+        "receivedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["clientTimestamp"]
+    }
+  },
+  "firestore": {
+    "/adminAllowlist/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/AdminAllowlist"
+      },
+      "description": "Explicit allowlist of administrator user accounts allowed to manage the CMS"
+    },
+    "/siteSettings/{settingId}": {
+      "schema": {
+        "$ref": "#/entities/SiteSettings"
+      },
+      "description": "Global website settings and general configuration"
+    },
+    "/pages/{pageId}": {
+      "schema": {
+        "$ref": "#/entities/Page"
+      },
+      "description": "Website page registry defining metadata and section ordering"
+    },
+    "/sections/{sectionId}": {
+      "schema": {
+        "$ref": "#/entities/Section"
+      },
+      "description": "Modular CMS sections with draft content, design options, and media references"
+    },
+    "/publishedContent/{contentId}": {
+      "schema": {
+        "$ref": "#/entities/PublishedContent"
+      },
+      "description": "Public read-only snapshots of approved published page content"
+    },
+    "/media/{mediaId}": {
+      "schema": {
+        "$ref": "#/entities/MediaItem"
+      },
+      "description": "Persistent media library metadata records"
+    },
+    "/revisions/{revisionId}": {
+      "schema": {
+        "$ref": "#/entities/Revision"
+      },
+      "description": "Versioned rollback snapshots of page and section revisions"
+    },
+    "/auditLogs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/AuditLog"
+      },
+      "description": "Audit trails recording administrative actions, edits, and publications"
+    },
+    "/briefSubmissions/{briefId}": {
+      "schema": {
+        "$ref": "#/entities/BriefSubmission"
+      },
+      "description": "Client project briefs submitted through the website scope configurator"
+    }
+  }
+}
