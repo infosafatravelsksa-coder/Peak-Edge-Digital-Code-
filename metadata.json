@@ -1,6 +1,0 @@
-{
-  "name": "Maintenance Infrastructure & Workshops Showcase",
-  "description": "High-performance interactive industrial workshops and maintenance infrastructure section matching video design and fluid responsiveness.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
